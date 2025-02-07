@@ -1,4 +1,4 @@
-# LINE 仮想通貨 価格通知
+# LINEにBitbankの価格通知
 
 # 機能
 - 5分間隔でbitbankの価格を監視
