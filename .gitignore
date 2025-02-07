@@ -1,0 +1,10 @@
+bitbank-price-alert/myenv/*
+bitbank-price-alert.zip
+SECRET.md
+memo.txt
+conversion/csv_to_json.py
+conversion/input_data.csv
+conversion/output_data.json
+conversion/run.bat
+bitbank-price-alert/__pycache__/six.cpython-39.pyc
+bitbank-price-alert/utils/__pycache__/constants.cpython-311.pyc

@@ -1,0 +1,5 @@
+boto3
+botocore
+git+https://github.com/bitbankinc/python-bitbankcc.git
+requests
+pytz
