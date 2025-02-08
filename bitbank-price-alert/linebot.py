@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 import json
 import time
@@ -12,21 +13,39 @@ from utils.constants import *
 japan_timezone = pytz.timezone('Asia/Tokyo')
 
 # 対象通貨
-CURRENCY_PAIR = os.getenv("CURRENCY_PAIR")
+CURRENCY_PAIR = os.getenv("CURRENCY_PAIR", None)
 # LINE APIのエンドポイント
-URL = os.getenv("LINE_URL")
+URL = os.getenv("LINE_URL", None)
 # チャンネルアクセストークン
-CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
+CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
 # 送信先ID
-TO = os.getenv("LINE_USER_ID")
+TO = os.getenv("LINE_USER_ID", None)
 
 # リトライ回数の設定
-MAX_RETRIES = int(os.getenv("MAX_RETRIES"))
-RETRY_DELAY = float(os.getenv("RETRY_DELAY"))  # 秒
+max_retries_env = os.getenv("MAX_RETRIES", None)
+retry_delay_env = os.getenv("RETRY_DELAY", None)  # 秒
 
 # ログの設定
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+#無いならエラー
+if CURRENCY_PAIR is None:
+    logger.error('Specify CURRENCY_PAIR as environment variable.')
+    sys.exit(1)
+if CHANNEL_ACCESS_TOKEN is None:
+    logger.error('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
+    sys.exit(1)
+if max_retries_env is None:
+    logger.error('Specify MAX_RETRIES as environment variable.')
+    sys.exit(1)
+else:
+    MAX_RETRIES = int(max_retries_env)
+if retry_delay_env is None:
+    logger.error('Specify RETRY_DELAY as environment variable.')
+    sys.exit(1)
+else:
+    RETRY_DELAY = float(retry_delay_env)
 
 # LINEにメッセージを送信する関数
 def send_message(current_price, alert_target_prices):

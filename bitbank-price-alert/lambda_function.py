@@ -11,13 +11,21 @@ from linebot import send_message
 from utils.constants import *
 
 # 対象通貨
-CURRENCY_PAIR = os.getenv("CURRENCY_PAIR")
+CURRENCY_PAIR = os.getenv("CURRENCY_PAIR", None)
 # テーブル名
-TABLE_NAME = os.getenv("TABLE_NAME")
+TABLE_NAME = os.getenv("TABLE_NAME", None)
 
 # ログの設定
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+#無いならエラー
+if CURRENCY_PAIR is None:
+    logger.error('Specify CURRENCY_PAIR as environment variable.')
+    sys.exit(1)
+if TABLE_NAME is None:
+    logger.error('Specify TABLE_NAME as environment variable.')
+    sys.exit(1)
 
 # 日本時間を設定
 japan_timezone = pytz.timezone('Asia/Tokyo')
