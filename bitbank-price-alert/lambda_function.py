@@ -1,4 +1,5 @@
 import os
+import sys
 import boto3
 import python_bitbankcc
 import logging
@@ -26,7 +27,7 @@ def lambda_handler(event, context):
 
     if CURRENCY_PAIR not in CURRENCY_UNIT:
         logger.error(f"対象通貨が不正です: {CURRENCY_PAIR}")
-        return
+        sys.exit(1)
 
     try:
         # public API classのオブジェクトを取得
@@ -36,7 +37,7 @@ def lambda_handler(event, context):
         logger.info(f"現在の価格: {current_price}")
     except Exception as e:
         logger.error(f"価格取得に失敗しました: {e}")
-        return
+        sys.exit(1)
 
     dynamodb = boto3.resource('dynamodb')
     dynamodb_client = boto3.client('dynamodb')
@@ -55,10 +56,10 @@ def lambda_handler(event, context):
 
         if response['Count'] == 0:
             logger.info('レコードが存在しません')
-            return
+            sys.exit(1)
     except ClientError as e:
         logger.error(f"DynamoDBクエリに失敗しました: {e}")
-        return
+        sys.exit(1)
 
     items = response.get('Items', [])
     sorted_items = sorted(items, key=lambda x: float(x['target_price']), reverse=True)
@@ -97,7 +98,7 @@ def lambda_handler(event, context):
             dynamodb_client.transact_write_items(TransactItems=update_transactions)  # トランザクション実行
     except ClientError as e:
         logger.error("トランザクション処理に失敗しました。自動的に元の状態に戻されました:", e)
-        return
+        sys.exit(1)
 
     # 通知対象のアイテムを取得
     alert_target_prices = []
@@ -124,7 +125,7 @@ def lambda_handler(event, context):
         notification_sent = send_message(current_price, alert_target_prices)
         if not notification_sent:
             logger.error('通知に失敗しました')
-            return
+            sys.exit(1)
         else:
             logger.info('通知が完了しました')
 
