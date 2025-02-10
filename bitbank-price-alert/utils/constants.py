@@ -59,4 +59,4 @@ CURRENCY_UNIT = {
 }
 
 
-LINE = "-" * 40
+LINE = "-" * 45
