@@ -63,10 +63,10 @@ def send_message(current_price, alert_target_prices):
     now = datetime.now(japan_timezone)
     today = now.strftime("%Y/%m/%d %H:%M:%S")
 
-    text = f"[価格通知 {today}]\n"
-    text += f"現在の価格 : {current_price}{CURRENCY_UNIT[CURRENCY_PAIR]}\n"
+    text = f"[📢 価格通知 ⏰ {today}]\n"
+    text += f"💰 現在の価格 : {current_price}{CURRENCY_UNIT[CURRENCY_PAIR]}\n"
     text += LINE
-    text += "\n各アラート価格"
+    text += "\n🚨 各アラート価格"
     text += alert_prices_message
 
     # 送信データ
