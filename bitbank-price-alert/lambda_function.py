@@ -4,6 +4,7 @@ import boto3
 import python_bitbankcc
 import logging
 import pytz
+
 from datetime import datetime, timedelta
 from botocore.exceptions import ClientError
 from linebot import send_message
@@ -114,9 +115,15 @@ def lambda_handler(event, context):
     for item in sorted_items:
         target_price = float(item['target_price'])
 
+        if item['target_comparison'] not in ('low', 'high'):
+            logger.error(f"比較対象が不正です: {item}")
+            sys.exit(1)
+
+        comparison_result = current_price < target_price if item['target_comparison'] == 'low' else current_price > target_price
+
         if not item['notification_never_sent'] \
             and not item['notification_sent'] \
-            and current_price < target_price:
+            and comparison_result:
 
             should_notify = item['last_notification_date'] != yesterday_formatted or \
                             (item['last_notification_date'] == yesterday_formatted and
